@@ -167,7 +167,7 @@ include 'token.php';
 			while(($ttype == Token::TOKEN_NUMERIC || $ch == '.') &&  $ch != Lexer::CHAR_NULL) {
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
-				if($ch != Lexer::CHAR_NULL && $ttype == Token::TOKEN_NUMERIC)
+				if($ch != Lexer::CHAR_NULL && ($ttype == Token::TOKEN_NUMERIC || $ch == '.'))
 				$lex_string .= $ch;	
 			}
 					
