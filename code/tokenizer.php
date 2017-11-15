@@ -52,7 +52,9 @@ function outputTable() {
 	echo "</table>";
 }
 
+if(strlen($str)) {
 outputTable();
+}
 
 ?>
 </body>
