@@ -37,7 +37,7 @@ Lexer
 echo "<form action=\"tokenizer.php\" method=\"POST\">";
 echo "<textarea name=\"code\" rows=\"20\" cols=\"100\">" . $str . "</textarea><br>\n";
 echo "<input name\"sub\" type=\"submit\" />\n";
-echo "</form>";
+echo "</form><br>";
 
 
 function outputTable() {
