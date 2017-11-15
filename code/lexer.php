@@ -2,6 +2,7 @@
 
 include 'token.php';
 
+
 	class Lexer {
 		protected $code;
 		protected $index;
@@ -10,6 +11,17 @@ include 'token.php';
 		const CHAR_NULL = 255;
 		var $op = array("==", "+=", "-=", "*=", "/=", "^=", "!=", "&=", "|=", "++", "--", "||", "&&", "%=", ">>","<<", "::","->", "=>", ".=", "<?", "?>", "//", "/*", "*/");
 		var $lex_tokens;
+		var $keywords = array("alignof", "and", "and_eq", "asm",
+        "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char",
+        "char16_t", "char32_t", "class", "compl", "const", "constexpr",
+        "const_cast", "continue", "decltype", "default", "delete", "do",
+        "double", "dynamic_cast", "else", "enum", "explicit", "export",
+        "extern", "false", "float", "for", "friend", "goto", "if", "inline",
+        "int", "long", "mutable", "namespace", "new", "noexcept", "not",
+        "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected",
+        "public", "register", "reinterpret_cast", "return", "short", "signed",
+        "sizeof", "static", "static_assert", "static_cast", "struct", "switch",
+        "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "import","abstract","final","interface", "extends", "implements");
 		
 		function __construct($code) {
 			$this->code = $code;
@@ -195,6 +207,13 @@ include 'token.php';
 			for($i = 0; $i < $this->token_index; $i++) 
 				$this->lex_tokens[$i]->printToken();		
 		}
+		function isKeyword($v) {
+			for ($i = 0; $i < count($this->keywords); $i++) {
+				if($this->keywords[$i] == $v)
+				return true;	
+			}
+			return false;
+		}
 	}
 	
 	function convertTypeToCSS($type) {
@@ -213,17 +232,5 @@ include 'token.php';
 			}
 	}
 	
-	function convertToHTML($s) {
-		$total = "";
-		for($i = 0; $i < strlen($s); $i++) {
-			if($s[$i] == '<') {
-				$total .= "&lt;";
-			} else if($s[$i] == '>') {
-				$total .= "&gt;";
-			} else {
-				$total .= $s[$i];
-			}	
-		}
-		return $total;	
-	}
+	
 ?>

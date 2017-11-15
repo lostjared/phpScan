@@ -47,7 +47,14 @@ function outputTable() {
 	echo "<table border=\"1\" cellspacing=\"4\" cellpadding=\"4\"><tr style=\"background-color: rgb(150, 150, 150);\"><td class=\"linenumber\"><b>Index</b></td><td class=\"linenumber\"><b>Token</b></td><td class=\"linenumber\"><b>Type</b></td></tr>\n";
 	for($i = 0; $i < count($lexer->lex_tokens); $i++) {
 		$tokenvar = $lexer->lex_tokens[$i];
-		echo "<tr><td class=\"lineindex_color\">" . ($i+1) . "</td><td class=\"" . convertTypeToCSS($tokenvar) . "\">" . convertToHTML($tokenvar->token) . "</td><td class=\"linetype\">" . $tokenvar->getTypeString() . "</td></tr>";
+		$output_type = convertTypeToCSS($tokenvar);
+		$output_type_string = $tokenvar->getTypeString();
+		if($tokenvar->getType() == Token::TOKEN_ID && $lexer->isKeyword($tokenvar->token)) {
+			$output_type = "codekeyword";
+			$output_type_string = "Keyword";
+		}
+		
+		echo "<tr><td class=\"lineindex_color\">" . ($i+1) . "</td><td class=\"" . $output_type . "\">" . htmlentities($tokenvar->token) . "</td><td class=\"linetype\">" . $output_type_string . "</td></tr>";
 	}
 	echo "</table>";
 }
