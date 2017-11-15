@@ -72,7 +72,7 @@
 				case '`':
 				return Token::TOKEN_SYMBOL;
 				case "\"":
-				case "\'":
+				case "'":
 				return Token::TOKEN_STRING;
 				break;			
 			}
