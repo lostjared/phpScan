@@ -21,7 +21,7 @@ include 'token.php';
         "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected",
         "public", "register", "reinterpret_cast", "return", "short", "signed",
         "sizeof", "static", "static_assert", "static_cast", "struct", "switch",
-        "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "import","abstract","final","interface", "extends", "implements");
+        "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "import","abstract","final","interface", "extends", "implements", "function");
 		
 		function __construct($code) {
 			$this->code = $code;
@@ -61,6 +61,10 @@ include 'token.php';
 					$this->putBack();
 					$this->getString();
 					break;
+					case Token::TOKEN_CHSTR:
+					$this->putBack();
+					$this->getStringQuote();
+					break;
 					case Token::TOKEN_NUMERIC:
 					$this->putBack();
 					$this->getNumeric();
@@ -99,6 +103,28 @@ include 'token.php';
 			}
 			
 			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_STRING);
+		}
+		
+		function getStringQuote() {
+			$this->getChar(); // eat quote character
+			$ch = $this->getChar();
+			$ttype = getCharacterType($ch);
+			$lex_string = "";
+			while($ttype != Token::TOKEN_CHSTR && $ch != Lexer::CHAR_NULL) {
+				
+				if($ch != Lexer::CHAR_NULL && $ch != "\\") {
+					$lex_string .= $ch; 
+				} else if($ch == "\\") {
+					$ch = $this->getChar();
+					if($ch != Lexer::CHAR_NULL)
+						$lex_string .= "\\" . $ch;
+				}
+					
+				$ch = $this->getChar();
+				$ttype = getCharacterType($ch);
+			}
+			
+			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_CHSTR);
 		}
 		
 		function getSymbol() {
@@ -191,7 +217,10 @@ include 'token.php';
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
 			$string_token = "";	
-			while($ttype == Token::TOKEN_CHAR && $ch != Lexer::CHAR_NULL) {
+			
+			if($ttype != Token::TOKEN_CHAR) return;
+			
+			while(($ttype == Token::TOKEN_CHAR || $ttype == Token::TOKEN_NUMERIC) && $ch != Lexer::CHAR_NULL) {
 				$string_token .= $ch;
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
@@ -220,6 +249,7 @@ include 'token.php';
 			switch($type->token_type) {
 				case Token::TOKEN_NOTHING:
 				break;
+				case Token::TOKEN_CHSTR:
 				case Token::TOKEN_STRING:
 				return "codestring";
 				case Token::TOKEN_ID:

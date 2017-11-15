@@ -10,9 +10,10 @@
 		const TOKEN_SYMBOL = 5;
 		const TOKEN_HEX = 6;
 		const TOKEN_CHAR = 7;
+		const TOKEN_CHSTR = 8;
 
 		var $token, $token_type;
-		var $type_text = array("Nothing", "Token ID", "String", "Numeric", "Whitespace", "Symbol", "Hex", "Char");
+		var $type_text = array("Nothing", "Token ID", "String", "Numeric", "Whitespace", "Symbol", "Hex", "Char", "Quote");
 			
 		
 		function __construct($token, $token_type) {
@@ -71,8 +72,9 @@
 				case '~':
 				case '`':
 				return Token::TOKEN_SYMBOL;
-				case "\"":
 				case "'":
+				return Token::TOKEN_CHSTR;
+				case "\"":
 				return Token::TOKEN_STRING;
 				break;			
 			}
