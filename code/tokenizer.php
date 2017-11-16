@@ -18,8 +18,7 @@ include 'lexer.php';
 <title>
 Lexer
 </title>
-</head>
-<body>
+
 <style>
 .linenumber { background-color: rgb(0,100,200); }
 .lineindex_color { color: rgb(255,255,255); background-color: #000000; }
@@ -32,6 +31,8 @@ Lexer
 .codedigit { color: rgb(0,255,186); background-color: rgb(0,0,0); }
 .codechar { color: rgb(187,212,249); background-color: rgb(94,0,167); }
 </style>
+</head>
+<body>
 <?php 
 
 echo "<form action=\"tokenizer.php\" method=\"POST\">";
