@@ -4,14 +4,14 @@ include 'token.php';
 
 
 	class Lexer {
+		const CHAR_NULL = 255;
 		protected $code;
 		protected $index;
 		protected $tokens;
-		var $token_index;
-		const CHAR_NULL = 255;
-		var $op = array("==", "+=", "-=", "*=", "/=", "^=", "!=", "&=", "|=", "++", "--", "||", "&&", "%=", ">>","<<", "::","->", "=>", ".=", "<?", "?>", "//", "/*", "*/");
-		var $lex_tokens;
-		var $keywords = array("alignof", "and", "and_eq", "asm",
+		public $token_index;
+		public $op = array("==", "+=", "-=", "*=", "/=", "^=", "!=", "&=", "|=", "++", "--", "||", "&&", "%=", ">>","<<", "::","->", "=>", ".=", "<?", "?>", "//", "/*", "*/");
+		public $lex_tokens;
+		public $keywords = array("alignof", "and", "and_eq", "asm",
         "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char",
         "char16_t", "char32_t", "class", "compl", "const", "constexpr",
         "const_cast", "continue", "decltype", "default", "delete", "do",

@@ -12,8 +12,8 @@
 		const TOKEN_CHAR = 7;
 		const TOKEN_CHSTR = 8;
 
-		var $token, $token_type;
-		var $type_text = array("Nothing", "Token ID", "String", "Numeric", "Whitespace", "Symbol", "Hex", "Char", "Quote");
+		public $token, $token_type;
+		public $type_text = array("Nothing", "Token ID", "String", "Numeric", "Whitespace", "Symbol", "Hex", "Char", "Quote");
 			
 		
 		function __construct($token, $token_type) {
