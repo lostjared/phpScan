@@ -3,12 +3,13 @@
 
 include 'lexer.php';
 
+
 	if(isset($_POST["code"])) {
 		$str = $_POST["code"];
 	} else {
 		$str = "";
 	}
-	$lexer = new Lexer($str);
+	$lexer = new \Lex\Lexer($str);
 	$lexer->Lex();
 ?>
 
@@ -48,9 +49,9 @@ function outputTable() {
 	echo "<table border=\"1\" cellspacing=\"4\" cellpadding=\"4\"><tr style=\"background-color: rgb(150, 150, 150);\"><td class=\"linenumber\"><b>Index</b></td><td class=\"linenumber\"><b>Token</b></td><td class=\"linenumber\"><b>Type</b></td></tr>\n";
 	for($i = 0; $i < count($lexer->lex_tokens); $i++) {
 		$tokenvar = $lexer->lex_tokens[$i];
-		$output_type = convertTypeToCSS($tokenvar);
+		$output_type = \Lex\convertTypeToCSS($tokenvar);
 		$output_type_string = $tokenvar->getTypeString();
-		if($tokenvar->getType() == Token::TOKEN_ID && $lexer->isKeyword($tokenvar->token)) {
+		if($tokenvar->getType() == \Lex\Token::TOKEN_ID && $lexer->isKeyword($tokenvar->token)) {
 			$output_type = "codekeyword";
 			$output_type_string = "Keyword";
 		}

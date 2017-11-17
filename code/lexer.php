@@ -1,7 +1,6 @@
 <?php
-
-include 'token.php';
-
+namespace Lex {
+include_once 'token.php';
 
 	class Lexer {
 		const CHAR_NULL = 255;
@@ -261,4 +260,6 @@ include 'token.php';
 				break;
 			}
 	}
+	
+}
 	

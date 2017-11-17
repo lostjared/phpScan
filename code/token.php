@@ -1,5 +1,5 @@
 <?php
-
+	namespace Lex {
 
 	class Token {
 		const TOKEN_NOTHING = 0;
@@ -79,5 +79,5 @@
 				break;			
 			}
 		}
-
+	}
 
