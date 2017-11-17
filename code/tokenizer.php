@@ -56,7 +56,7 @@ function outputTable() {
 			$output_type_string = "Keyword";
 		}
 		
-		echo "<tr><td class=\"lineindex_color\">" . ($i+1) . "</td><td class=\"" . $output_type . "\">" . htmlentities($tokenvar->token) . "</td><td class=\"linetype\">" . $output_type_string . "</td></tr>";
+		echo "<tr><td class=\"lineindex_color\">" . ($i+1) . "</td><td class=\"" . $output_type . "\">" . htmlentities($tokenvar->token, ENT_QUOTES) . "</td><td class=\"linetype\">" . $output_type_string . "</td></tr>";
 	}
 	echo "</table>";
 }
