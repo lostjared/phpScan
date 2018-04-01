@@ -1,4 +1,10 @@
 <?php
+
+// This file contains the Token class
+// declares the different types of tokens
+// and function to get what type of a token it is based off the character type
+// then a instance of this class is added to the end of the List of tokens in the Lexer
+
 	namespace Lex {
 
 	// class to Hold each Indiividual Token

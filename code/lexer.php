@@ -1,4 +1,11 @@
 <?php
+
+// How this code works is the Lexer is passed a string containing the code 
+// it then is processed when the Lex function is called
+// each character type is looked up (in Token.php) and based on what
+// character type it is it enters a loop to collect those character and then adds to the list varaible of type Token containing the
+// information for the token type (from the character type)
+
 namespace Lex {
 include_once 'token.php'; // include token source code
 
