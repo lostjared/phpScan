@@ -1,15 +1,18 @@
 <?php
 namespace Lex {
-include_once 'token.php';
+include_once 'token.php'; // include token source code
 
+// class for the Lexer
 	class Lexer {
 		const CHAR_NULL = 255;
 		protected $code;
 		protected $index;
 		protected $tokens;
 		public $token_index;
+		// known two character operators
 		public $op = array("==", "+=", "-=", "*=", "/=", "^=", "!=", "&=", "|=", "++", "--", "||", "&&", "%=", ">>","<<", "::","->", "=>", ".=", "<?", "?>", "//", "/*", "*/");
 		public $lex_tokens;
+		// known keywords
 		public $keywords = array("alignof", "and", "and_eq", "asm",
         "auto", "bitand", "bitor", "bool", "break", "case", "catch", "char",
         "char16_t", "char32_t", "class", "compl", "const", "constexpr",
@@ -22,6 +25,7 @@ include_once 'token.php';
         "sizeof", "static", "static_assert", "static_cast", "struct", "switch",
         "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "import","abstract","final","interface", "extends", "implements", "function");
 		
+		// class constructor pass it the code to lx
 		function __construct($code) {
 			$this->code = $code;
 			$this->index = 0;	
@@ -29,6 +33,7 @@ include_once 'token.php';
 			$this->lex_tokens = array();
 		}
 		
+		// grab a single character from the code string
 		function getChar() {
 			if($this->index < strlen($this->code)) {
 				$ch = $this->code[$this->index];
@@ -38,39 +43,41 @@ include_once 'token.php';
 			return Lexer::CHAR_NULL;
 		}
 		
+		// get the current char and not increment the position for the next char
 		function getCurrentChar() {
 			if($this->index < strlen($this->code))  {
 				return $this->code[$this->index];	
 			}
 			return Lexer::CHAR_NULL;
 		}
-		
+		// function that preforms the lexical code
 		function Lex() {
+			// while this index (current position) is less the length of the string passed in from constructor
 		while($this->index < strlen($this->code)) {
-				$ch = $this->getChar();					
-				if($ch == Lexer::CHAR_NULL) break;
-				$ch_type = getCharacterType($ch);
-				if($ch_type == Token::TOKEN_WHITESPACE) continue;
-				switch($ch_type) {
-					case Token::TOKEN_CHAR:
+				$ch = $this->getChar(); // grab character					
+				if($ch == Lexer::CHAR_NULL) break; // if its te EOF character break loop
+				$ch_type = getCharacterType($ch);//grab the character Type
+				if($ch_type == Token::TOKEN_WHITESPACE) continue;// if it is whitespace continue (start from top of loop)
+				switch($ch_type) {// switch based on what type of character it is
+					case Token::TOKEN_CHAR: // if it is a character
 					$this->putBack();
-					$this->getId();
+					$this->getId();// get Identifier
 					break;
-					case Token::TOKEN_STRING:
+					case Token::TOKEN_STRING:// if it is a string
 					$this->putBack();
-					$this->getString();
+					$this->getString();// grab double quote string
 					break;
-					case Token::TOKEN_CHSTR:
+					case Token::TOKEN_CHSTR: // if it is a quote
 					$this->putBack();
-					$this->getStringQuote();
+					$this->getStringQuote();//grab string quote
 					break;
-					case Token::TOKEN_NUMERIC:
+					case Token::TOKEN_NUMERIC:// if it is a numeric (integer or float)
 					$this->putBack();
 					$this->getNumeric();
 					break;
-					case Token::TOKEN_SYMBOL:
+					case Token::TOKEN_SYMBOL:// if is a operator or symbol
 					$this->putback();
-					$this->getSymbol();
+					$this->getSymbol();// grab symbol
 					break;
 					default:
 					continue;
@@ -78,15 +85,18 @@ include_once 'token.php';
 			}			
 		}
 		
+		// put back the char grabbed from getChar()
 		function putBack() {
 			$this->index--;	
 		}
 		
+		// get a string token
 		function getString() {
 			$this->getChar(); // eat quote character
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
 			$lex_string = "";
+			//loop through and grab character until one is found that doesn't fit
 			while($ttype != Token::TOKEN_STRING && $ch != Lexer::CHAR_NULL) {
 				
 				if($ch != Lexer::CHAR_NULL && $ch != "\\") {
@@ -101,14 +111,16 @@ include_once 'token.php';
 				$ttype = getCharacterType($ch);
 			}
 			
+			// set next token as new Token with string
 			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_STRING);
 		}
-		
+		// get a single quote string
 		function getStringQuote() {
 			$this->getChar(); // eat quote character
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
 			$lex_string = "";
+			//loop through and grab character until one is found that doesn't fit
 			while($ttype != Token::TOKEN_CHSTR && $ch != Lexer::CHAR_NULL) {
 				
 				if($ch != Lexer::CHAR_NULL && $ch != "\\") {
@@ -122,10 +134,10 @@ include_once 'token.php';
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
 			}
-			
+			// set next token as token of type quote string
 			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_CHSTR);
 		}
-		
+		//loop through and grab character until one is found that doesn't fit
 		function getSymbol() {
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
@@ -149,12 +161,14 @@ include_once 'token.php';
 						$this->putBack();
 					}
 							
+			// remove C++ style comments
 			if($lex_string == "//") {
-				$ch = $this->getChar();;
+				$ch = $this->getChar();
 				while($ch != "\n" && $ch != Lexer::CHAR_NULL) {
 					$ch = $this->getChar();	
 				}
 				return;
+				// remove C style comments
 			} else if($lex_string == "/*") {
 				$ch = $this->getChar();
 				while(1) {
@@ -167,40 +181,20 @@ include_once 'token.php';
 						$ch = $c;	
 					}
 				}
-			} 
-			
-					
-						
+			} 			
 				}
 			}	
-			if($lex_string == "//") {
-				$ch = $this->getChar();;
-				while($ch != "\n" && $ch != Lexer::CHAR_NULL) {
-					$ch = $this->getChar();	
-				}
-				return;
-			} else if($lex_string == "/*") {
-				$ch = $this->getChar();
-				while(1) {
-					$c = $this->getChar();
-					$ch .= $c;
-					if($ch == "*/" || $ch == Lexer::CHAR_NULL) {
-						return;
-					}
-					 else {
-						$ch = $c;	
-					}
-				}
-			} 
-			
+			// add token (operator) to list of tokens
 			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_SYMBOL);
 		}
 		
+		// grab numeric token
 		function getNumeric() {
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
 			$lex_string = $ch;
 			
+			// loop until type is not a TOKEN_NUMERIC
 			while(($ttype == Token::TOKEN_NUMERIC || $ch == '.') &&  $ch != Lexer::CHAR_NULL) {
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
@@ -208,33 +202,38 @@ include_once 'token.php';
 				$lex_string .= $ch;	
 			}
 					
+			// add new token to end of list
 			$this->lex_tokens[$this->token_index++] = new Token($lex_string, Token::TOKEN_NUMERIC);
 			if($ch != Lexer::CHAR_NULL) $this->putBack();
 		}
 		
+		// get identifier token
 		function getId() {
 			$ch = $this->getChar();
 			$ttype = getCharacterType($ch);
 			$string_token = "";	
 			
 			if($ttype != Token::TOKEN_CHAR) return;
-			
+			// loop until type is not a character or a digit
 			while(($ttype == Token::TOKEN_CHAR || $ttype == Token::TOKEN_NUMERIC) && $ch != Lexer::CHAR_NULL) {
 				$string_token .= $ch;
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
 			}
+			// add new token to end of the list
 			$this->lex_tokens[$this->token_index++] = new Token($string_token, Token::TOKEN_ID);
 			if($ch != Lexer::CHAR_NULL) {
 				$this->putBack();
 			}
 		}
 		
+		// print out Debug tokens
 		function debugTokens() {
 			echo "Token count: " . $this->token_index . "<br>";
 			for($i = 0; $i < $this->token_index; $i++) 
 				$this->lex_tokens[$i]->printToken();		
 		}
+		// check if string is a keyword
 		function isKeyword($v) {
 			for ($i = 0; $i < count($this->keywords); $i++) {
 				if($this->keywords[$i] == $v)
@@ -243,7 +242,7 @@ include_once 'token.php';
 			return false;
 		}
 	}
-	
+	// convert Code type to CSS id
 	function convertTypeToCSS($type) {
 			switch($type->token_type) {
 				case Token::TOKEN_NOTHING:
