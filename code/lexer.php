@@ -25,7 +25,7 @@ include_once 'token.php'; // include token source code
         "sizeof", "static", "static_assert", "static_cast", "struct", "switch",
         "template", "this", "thread_local", "throw", "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "import","abstract","final","interface", "extends", "implements", "function");
 		
-		// class constructor pass it the code to lx
+		// class constructor pass it the code to lex
 		function __construct($code) {
 			$this->code = $code;
 			$this->index = 0;	
