@@ -83,7 +83,17 @@ include_once 'token.php'; // include token source code
 					$this->getNumeric();
 					break;
 					case Token::TOKEN_SYMBOL:// if is a operator or symbol
-					$this->putback();
+					$nch = $this->getChar();
+					$ntype = getCharacterType($nch);
+					
+					if($ch == '-' && $ntype == Token::TOKEN_NUMERIC) {
+						$this->putBack();
+						$this->putBack();
+						$this->getNumeric();
+						break;	
+					}
+					$this->putBack();
+					$this->putBack();
 					$this->getSymbol();// grab symbol
 					break;
 					default:
@@ -202,10 +212,10 @@ include_once 'token.php'; // include token source code
 			$lex_string = $ch;
 			
 			// loop until type is not a TOKEN_NUMERIC
-			while(($ttype == Token::TOKEN_NUMERIC || $ch == '.') &&  $ch != Lexer::CHAR_NULL) {
+			while(($ttype == Token::TOKEN_NUMERIC || $ch == '.' || $ch == '-') &&  $ch != Lexer::CHAR_NULL) {
 				$ch = $this->getChar();
 				$ttype = getCharacterType($ch);
-				if($ch != Lexer::CHAR_NULL && ($ttype == Token::TOKEN_NUMERIC || $ch == '.'))
+				if($ch != Lexer::CHAR_NULL && ($ttype == Token::TOKEN_NUMERIC || $ch == '.' || $ch == '-'))
 				$lex_string .= $ch;	
 			}
 					
